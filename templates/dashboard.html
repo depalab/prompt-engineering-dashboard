@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Prompt Engineering{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="dashboard-stat stat-primary">
+            <h2>{{ template_count }}</h2>
+            <p>Prompt Templates</p>
+            <a href="{{ url_for('prompt_templates') }}" class="btn btn-sm btn-primary">View Templates</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dashboard-stat stat-success">
+            <h2>{{ eval_count }}</h2>
+            <p>Completed Evaluations</p>
+            <a href="{{ url_for('evaluations') }}" class="btn btn-sm btn-success">View Evaluations</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dashboard-stat stat-warning">
+            <h2>{{ 'Set' if api_key_set else 'Not Set' }}</h2>
+            <p>API Key Status</p>
+            <a href="{{ url_for('api_key') }}" class="btn btn-sm btn-warning">Manage API Key</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('new_template') }}" class="btn btn-outline-primary">Create New Template</a>
+                    <a href="{{ url_for('new_evaluation') }}" class="btn btn-outline-success">Run New Evaluation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>System Status</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Simple chart for visualization
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Templates', 'Evaluations'],
+            datasets: [{
+                label: 'System Statistics',
+                data: [{{ template_count }}, {{ eval_count }}],
+                  backgroundColor: [
+                    'rgba(13, 110, 253, 0.5)',
+                    'rgba(25, 135, 84, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(13, 110, 253, 1)',
+                    'rgba(25, 135, 84, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+               
