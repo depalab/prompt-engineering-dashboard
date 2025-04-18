@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Evaluation Details - Prompt Engineering{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Evaluation Details</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('evaluations') }}" class="btn btn-sm btn-outline-secondary">
+            Back to Evaluations
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>{{ evaluation.template_name }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Timestamp:</strong> {{ evaluation.timestamp }}</p>
+                <p><strong>Model:</strong> {{ evaluation.model }}</p>
+                <p><strong>Frames Analyzed:</strong> {{ evaluation.frames_analyzed }}</p>
+                <p><strong>Frames Path:</strong> {{ evaluation.frames_path }}</p>
+            </div>
+            <div class="col-md-6">
+                <canvas id="resultsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="accordion" id="evaluationAccordion">
+    {% for result in evaluation.results %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ loop.index }}">
+            <button class="accordion-button {{ 'collapsed' if loop.index > 1 else '' }}" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapse{{ loop.index }}" aria-expanded="{{ 'true' if loop.index == 1 else 'false' }}" 
+                    aria-controls="collapse{{ loop.index }}">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <span>Question {{ loop.index }}: {{ result.question }}</span>
+                    {% if result.error %}
+                    <span class="badge bg-danger">Error</span>
+                    {% else %}
+                    <span class="badge bg-success">Success</span>
+                    {% endif %}
+                </div>
+            </button>
+        </h2>
+        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.index == 1 else '' }}" 
+             aria-labelledby="heading{{ loop.index }}" data-bs-parent="#evaluationAccordion">
+            <div class="accordion-body">
+                {% if result.error %}
+                <div class="alert alert-danger">
+                    <strong>Error:</strong> {{ result.error }}
+                </div>
+                {% else %}
+                <div class="bg-light p-3 rounded">
+                    <h6>Response:</h6>
+                    <div class="response-content">
+                        {{ result.response|nl2br }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Chart for visualizing results
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    const successCount = {{ evaluation.results|selectattr('error', 'none')|list|length }};
+    const errorCount = {{ evaluation.results|selectattr('error')|list|length }};
+    
+    const chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Success', 'Error'],
+            datasets: [{
+                data: [successCount, errorCount],
+                backgroundColor: [
+                    'rgba(25, 135, 84, 0.5)',
+                    'rgba(220, 53, 69, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(25, 135, 84, 1)',
+                    'rgba(220, 53, 69, 1)'
+                ],
+                borderWidth: 1
+            }]
+        }
+    });
+</script>
+{% endblock %}
