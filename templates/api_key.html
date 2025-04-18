@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}API Key - Prompt Engineering{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">API Key</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h5>Anthropic API Key</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="mb-3">
+                        <label for="api_key" class="form-label">API Key</label>
+                        {{ form.api_key(class="form-control", id="api_key") }}
+                        <div class="form-text">Your API key is used to make requests to the Anthropic API.</div>
+                    </div>
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">This key is stored securely and used only for your evaluations.</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
