@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}New Template - Prompt Engineering{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">New Prompt Template</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                <label for="name" class="form-label">Template Name</label>
+                {{ form.name(class="form-control", id="name") }}
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                {{ form.description(class="form-control", id="description", rows=3) }}
+            </div>
+            <div class="mb-3">
+                <label for="template" class="form-label">Prompt Template</label>
+                {{ form.template(class="form-control", id="template", rows=10) }}
+                <div class="form-text">
+                    Use variables like {question} that will be replaced during evaluation.
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('prompt_templates') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
