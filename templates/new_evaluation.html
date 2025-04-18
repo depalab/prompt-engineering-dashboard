@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}New Evaluation - Prompt Engineering{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">New Evaluation</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h5>Run Causal Prompt Evaluation</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    
+                    <div class="mb-3">
+                        <label for="template" class="form-label">Prompt Template</label>
+                        {{ form.template(class="form-select", id="template") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Model</label>
+                        {{ form.model(class="form-select", id="model") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="frames_folder" class="form-label">Upload Frames (ZIP)</label>
+                        {{ form.frames_folder(class="form-control", id="frames_folder") }}
+                        <div class="form-text">Upload a ZIP file containing the video frames to analyze.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">This process may take several minutes depending on the number of frames and complexity of the evaluation.</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
